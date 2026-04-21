@@ -11,8 +11,7 @@ import {
   View,
 } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
-import { getMessages, getOrCreateConversation } from "../services/api";
-import { connectSocket, getSocket } from "../services/socket";
+import { connectSocket, getSocket, loadChat } from "../services/socket";
 import { clearQueue, enqueueMessage, getQueuedMessages } from "../storage/offlineQueue";
 
 const byTimestamp = (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
@@ -102,10 +101,9 @@ export default function ChatScreen({ currentUser, otherUser, onBack }) {
   const loadConversationAndHistory = useCallback(async () => {
     setLoading(true);
     try {
-      const conversation = await getOrCreateConversation(currentUser.userId, otherUser.userId);
+      const { conversation, messages: history } = await loadChat(currentUser.userId, otherUser.userId);
       conversationIdRef.current = conversation._id;
       setConversationId(conversation._id);
-      const history = await getMessages(conversation._id);
       setMessages(history.sort(byTimestamp));
     } catch (error) {
       console.log("Failed loading chat:", error.message);

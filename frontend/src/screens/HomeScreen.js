@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { getAllUsers } from "../services/api";
+import { fetchUsers } from "../services/socket";
 
 export default function HomeScreen({ currentUser, onSelectPartner, onLogout }) {
   const [users, setUsers] = useState([]);
@@ -16,8 +16,8 @@ export default function HomeScreen({ currentUser, onSelectPartner, onLogout }) {
   const loadUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const all = await getAllUsers();
-      setUsers(all.filter((u) => u._id !== currentUser.userId));
+          const { users } = await fetchUsers(currentUser.userId);
+      setUsers(users);
     } catch (error) {
       console.log("Failed to load users:", error.message);
     } finally {

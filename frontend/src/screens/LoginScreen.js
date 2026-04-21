@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { findOrCreateUser } from "../services/api";
+import { registerUser } from "../services/socket";
 
 export default function LoginScreen({ onLogin }) {
   const [name, setName] = useState("");
@@ -25,7 +25,7 @@ export default function LoginScreen({ onLogin }) {
     setError("");
     setLoading(true);
     try {
-      const user = await findOrCreateUser(trimmed);
+      const { user } = await registerUser(trimmed);
       onLogin({ userId: user._id, name: user.name });
     } catch {
       setError("Could not connect to server. Make sure the backend is running.");

@@ -1,11 +1,8 @@
 require("dotenv").config();
 const http = require("http");
 const express = require("express");
-const cors = require("cors");
 const { Server } = require("socket.io");
 const connectDB = require("./config/db");
-const messageRoutes = require("./routes/messageRoutes");
-const userRoutes = require("./routes/userRoutes");
 const setupSocket = require("./socket");
 
 const app = express();
@@ -18,12 +15,7 @@ const io = new Server(server, {
   },
 });
 
-app.use(cors());
-app.use(express.json());
-
 app.get("/health", (req, res) => res.json({ ok: true }));
-app.use("/api", messageRoutes);
-app.use("/api", userRoutes);
 
 setupSocket(io);
 
